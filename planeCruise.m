@@ -1,4 +1,4 @@
-function fuelburn = planeCruise(planeNumber, cruiseSpeed, cruiseAltitude)
+function [fuelburn, planeWeight, fuelWeight] = planeCruise(planeNumber, cruiseSpeed, cruiseAltitude, liftCoef, totalDistance, fuelburnCL)
 % PLANECRUISE(planeNumber, cruiseSpeed,cruiseAltitude) calculates the fuel 
 % consumption during the cruising phase of the flight. 
 
@@ -8,7 +8,7 @@ function fuelburn = planeCruise(planeNumber, cruiseSpeed, cruiseAltitude)
 % 3 - A320
 % 4 - A340
 % 5 - 777-200
-switch plane_number
+switch planeNumber
     case 1
         % 737-300 aircraft parameters
         S = 105.4;          % Wing area [m^2]
@@ -47,3 +47,35 @@ switch plane_number
     otherwise
         warning('Invalid plane number.');
 end
+
+V2 = cruiseSpeed;   % Cruise velocity [m/s] (constant)
+
+% Calculate the air density and the aircraft weight at zc (after climb)
+zc = cruiseAltitude;
+rhoc = rho0*exp(-epsilon*zc);   % Air density [kg/m^3]
+mc = ((liftCoef*S*V2^2)/(2*9.81))*rhoc; % Weight of the aircraft [kg]
+
+
+% Cruise time and distance
+% Define the time and the distance for the descent
+gamma = 100.0;          % Pick a number between 100 and 200
+vmean3 = 0.0333*gamma;  % Mean vertical speed [m/s]
+vhmean3 = sqrt(Vmean1^2 - vmean3^2);    % Mean horizontal velocity [m/s]
+Timedescent = (zc * 0.99)/vmean3/3600;  % Time of descent [hours]
+dHdescent = vhmean3 * Timedescent * 36000;  % Horizontal descent distance [m]
+
+% Time and distance for the cruise phase
+dHcruise = totalDistance - dHdescent - dHclimb;     % Horizontal cruise distance [m]
+Timecruise = dHcruise / V2 / 3600;  % Time of cruise [hours]
+
+% Thrust force [N]
+T2 = planeDrag;   % Thrust force is constant [N]
+
+% Fuel burn
+fuelburnCR = SFC * Timecruise*T2;   % Fuel burn during the cruise [kg]
+m2 = mc - fuelburnCR;   % Weight of aircraft after the cruise [kg]
+mf2 = fuelweightCL - fuelburnCR;    % Weight of fuel [kg]
+
+fuelburn = fuelburnCR;
+planeWeight = m2;
+fuelWeight = mf2;

@@ -1,8 +1,8 @@
-function fuelburn = planeClimb(planeNumber, climbAngle, climbAltitude)
+function [fuelburn, fuelWeight, liftCoef, planeDrag, Tmax, dHclimb] = planeClimb(planeNumber, climbAngle, climbAltitude)
 % Compute the fuel consumption during takeoff based on aircraft type, 
 % takeoff climb angle, and the final desired altitude.
-% PLANECLIMBE(plane_number, climbAngle, climbAltitude) returns the fuel 
-% consumption in lbs. 
+% PLANECLIMB(planeNumber, climbAngle, climbAltitude) returns the fuel 
+% consumption in kg. 
 
 %% Plane number options are:
 % 1 - 737-300
@@ -10,7 +10,7 @@ function fuelburn = planeClimb(planeNumber, climbAngle, climbAltitude)
 % 3 - A320
 % 4 - A340
 % 5 - 777-200
-switch plane_number
+switch planeNumber
     case 1
         % 737-300 aircraft parameters
         S = 105.4;          % Wing area [m^2]
@@ -119,5 +119,8 @@ Vmean1 = mean(V1);  % Mean velocity along the flight path [m/s]
 vhmean1 = sqrt(Vmean1^2 - vmean1^2);    % Mean horizontal velocity [m/s]
 dHclimb = vhmean1 * Timeclimb * 3600;   % Horizontal climb distance [m]
 
-fuelburnCL = fuelburnCL(end);
+fuelburn = fuelburnCL(end);
+fuelWeight = mf1(end);
+liftCoef = CL1(end);
+planeDrag = D1(end);
 
