@@ -1,59 +1,25 @@
-function [fuelburn, fuelWeight, liftCoef, planeDrag, Tmax, dHclimb] = planeClimb(planeNumber, climbAngle, climbAltitude)
+function [fuelburn, planeWeight, fuelWeight, machCruise,SpeedOfSound,liftCoef,planeDrag,horizClimbDist,Tmax] = planeClimb(planeNumber, descentTime, climbAltitude)
 % Compute the fuel consumption during takeoff based on aircraft type, 
 % takeoff climb angle, and the final desired altitude.
 % PLANECLIMB(planeNumber, climbAngle, climbAltitude) returns the fuel 
 % consumption in kg. 
 
-%% Plane number options are:
-% 1 - 737-300
-% 2 - 737-800
-% 3 - A320
-% 4 - A340
-% 5 - 777-200
-switch planeNumber
-    case 1
-        % 737-300 aircraft parameters
-        S = 105.4;          % Wing area [m^2]
-        m0 = 62800.0;       % Maximum takeoff weight [kg]
-        lf = 20100;         % Maximum fuel capacity [l]
-        alpha = 0.0735;     % Parameter defining the dimensional velocity
-        SFC = 0.03977;      % Coefficient fuel burn
-    case 2
-        % 737-800 aircraft parameters
-        S = 125.58;         % Wing area [m^2]
-        m0 = 79100;         % Maximum takeoff weight [kg]
-        lf = 26020;         % Maximum fuel capacity [l]
-        alpha = 0.0697;     % Parameter defining the dimensional velocity
-        SFC = 0.03875;      % Coefficient fuel burn
-    case 3
-        % A320 aircraft parameters
-        S = 125;    % Wing area [m^2]
-        m0 = 70000; % Maximum takeoff weight [kg]
-        lf = 24050; % Maximum fuel capacity [l]
-        alpha = 0.07;   % Parameter defining the dimensional velocity
-        SFC = 0.03467;  % Coefficient fuel burn
-    case 4
-        % Characteristics of the aircraft A340
-        S = 361.6; % Wing area [m^2]
-        m0 = 275000; % Maximum takeoff weight [kg]
-        lf = 155040;    % Maximum fuel capacity [l]
-        alpha = 0.0663; % Parameter defining the dimensional velocity
-        SFC = 0.03263;  % Coefficient fuel burn
-    case 5
-        % Characteristics of the aircraft 777-200
-        S = 427.8;  % Wing area [m^2]
-        m0 = 247200;    % Maximum takeoff weight [kg]
-        lf = 117348;    % Maximum fuel capacity [l]
-        alpha = 0.0648; % Parameter defining the dimensional velocity
-        SFC = 0.03365;  % Coefficient fuel burn
-    otherwise
-        warning('Invalid plane number.');
+if (nargin < 3)
+    error('on','Usage: planeClimb(planeNumber, descentTime, climbAltitude)');
 end
+
+% planeType returns S, m0, lf, alpha, SFC
+[S, m0, lf, alpha, SFC] = planeType(planeNumber);
+
 
 %% Parameters and constants
 
 beta = 60000;   % Velocity/altitude parameter
-gamma = climbAngle; % A number between 150-300
+if (descentTime >= 150 && descentTime <= 300) 
+    gamma = descentTime; % A number between 150-300
+else
+    warning('Invalid descentTime. Input range is 150-300');
+end
 zc = climbAltitude;   % Cruise altitude [m]
 rho0 = 1.225;   % Air density at sea level [kg/m^3]
 epsilon = 0.0001;   % Constant in the density function [l/m]
@@ -120,7 +86,11 @@ vhmean1 = sqrt(Vmean1^2 - vmean1^2);    % Mean horizontal velocity [m/s]
 dHclimb = vhmean1 * Timeclimb * 3600;   % Horizontal climb distance [m]
 
 fuelburn = fuelburnCL(end);
+planeWeight = m1(end);
 fuelWeight = mf1(end);
+machCruise = M1(end);
+SpeedOfSound = c1(end);
 liftCoef = CL1(end);
 planeDrag = D1(end);
+horizClimbDist = dHclimb;
 
