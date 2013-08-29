@@ -4,7 +4,7 @@ function [fuelburn, TIME] = planeLand(planeNumber,descentTime,planeWeight,fuelWe
 % PLANELAND(planeNumber, desscentAngle, descentAltitude) return the fuel
 % consumption in kg.
 if (nargin < 8) 
-    error('on','Usage: planeLang(planeNumber, descentTime, planeWeight, fuelWeight, fuelburnCL, fuelburnCR, Timedescent, Tmax)');
+    error('Usage: [fuelburn, TIME]=planeLand(planeNumber, descentTime, planeWeight, fuelWeight, fuelburnCL, fuelburnCR, Timedescent, Tmax)');
 end
 
 % planeType returns S, m0, lf, alpha, SFC

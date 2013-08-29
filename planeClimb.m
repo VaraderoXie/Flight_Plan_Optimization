@@ -1,11 +1,11 @@
-function [fuelburn, planeWeight, fuelWeight, machCruise,SpeedOfSound,liftCoef,planeDrag,horizClimbDist,Tmax] = planeClimb(planeNumber, descentTime, climbAltitude)
+function [fuelburn, planeWeight, fuelWeight, machCruise,SpeedOfSound,liftCoef,planeDrag,horizClimbDist,Tmax,Vmean1] = planeClimb(planeNumber, descentTime, climbAltitude)
 % Compute the fuel consumption during takeoff based on aircraft type, 
 % takeoff climb angle, and the final desired altitude.
 % PLANECLIMB(planeNumber, climbAngle, climbAltitude) returns the fuel 
 % consumption in kg. 
 
 if (nargin < 3)
-    error('on','Usage: planeClimb(planeNumber, descentTime, climbAltitude)');
+    error('Usage: [fuelburn, planeWeight, fuelWeight, machCruise, SpeedOfSound, liftCoef, planeDrag, horizClimbDist, Tmax,Vmean1]=planeClimb(planeNumber, descentTime, climbAltitude)');
 end
 
 % planeType returns S, m0, lf, alpha, SFC

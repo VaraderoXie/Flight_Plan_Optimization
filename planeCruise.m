@@ -1,9 +1,9 @@
-function [fuelburn, planeWeight, fuelWeight, cruiseTime, horizCruiseDist] = planeCruise(planeNumber, cruiseAltitude, deltaAltitude, liftCoef, totalDistance, SpeedOfSound, machCruise, descentTime, fuelweightCL, horizClimbDist)
+function [fuelburn, planeWeight, fuelWeight, cruiseTime, horizCruiseDist] = planeCruise(planeNumber, cruiseAltitude, deltaAltitude, liftCoef, totalDistance, SpeedOfSound, machCruise, descentTime, fuelweightCL, horizClimbDist,Vmean1,planeDrag)
 % PLANECRUISE(planeNumber, cruiseSpeed,cruiseAltitude) calculates the fuel 
 % consumption during the cruising phase of the flight. 
 
 if (nargin < 10)
-    error('on','Usage: planeCruise(planeNumber, cruiseAltitude, deltaAltitude, liftCoef, totalDistance, SpeedOfSound, machCruise, descentTime, fuelweightCL, horizClimbDist)');
+    error('Usage: [fuelburn, planeWeight, fuelWeight, cruiseTime, horizCruiseDist]=planeCruise(planeNumber, cruiseAltitude, deltaAltitude, liftCoef, totalDistance, SpeedOfSound, machCruise, descentTime, fuelweightCL, horizClimbDist,Vmean1,planeDrag)');
 end
 
 % planeType returns S, m0, lf, alpha, SFC
@@ -17,7 +17,7 @@ if (descentTime >= 150 && descentTime <= 300)
 else
     warning('Invalid descentTime. Input range is 150 - 300');
 end
-zc = climbAltitude;   % Cruise altitude [m]
+zc = cruiseAltitude;   % Cruise altitude [m]
 rho0 = 1.225;   % Air density at sea level [kg/m^3]
 epsilon = 0.0001;   % Constant in the density function [l/m]
 k = 0.045;  % Constant selected for the included drag coefficient

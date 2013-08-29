@@ -6,7 +6,7 @@ function [S, m0, lf, alpha, SFC] = planeType(planeNumber)
 % 4 - A340
 % 5 - 777-200
 if (nargin < 1)
-    error('on','Usage: planeType(planeNumber), planeNumber = 1 - 5');
+    error('Usage: [S,m0,lf,alpha,SFC]=planeType(planeNumber), planeNumber = 1 - 5');
 end
 
 switch planeNumber
