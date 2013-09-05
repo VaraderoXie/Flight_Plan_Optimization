@@ -35,7 +35,7 @@ function [s, a12, a21] = vdist(lat1,lon1,lat2,lon2)
 %            Max fractional difference: 0.56 percent
 
 % Input check:
-if abs(lat1)>90 | abs(lat2)>90
+if abs(lat1)>90 || abs(lat2)>90
     error('Input latitudes must be between -90 and 90 degrees, inclusive.')
 end
 % Supply WGS84 earth ellipsoid axis lengths in meters:
@@ -65,7 +65,7 @@ end
 lambda = L;
 lambdaold = 0;
 itercount = 0;
-while ~itercount | abs(lambda-lambdaold) > 1e-12  % force at least one execution
+while ~itercount || abs(lambda-lambdaold) > 1e-12  % force at least one execution
     itercount = itercount+1;
     if itercount > 50
         warning('Points are essentially antipodal. Precision may be reduced slightly.');
@@ -109,7 +109,7 @@ s = b*A*(sigma-deltasigma);
  if a21 < 0
      a21 = a21+pi;
  end
- if (L>0) & (L<pi)
+ if (L>0) && (L<pi)
      a21 = a21 + pi;
  end
 

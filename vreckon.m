@@ -37,7 +37,7 @@ function [lat2,lon2,a21] = vreckon(lat1,lon1,s,a12)
 %     function, when traversing from a pole, the azimuth is  0 when
 %     heading away from the south pole and 180 when heading away from the
 %     north pole. In contrast, this VRECKON function uses the azimuth as
-%     noted in (3) above when traversing away form a pole.
+%     noted in (3) above when traversing away from a pole.
 % (5) In testing, where the traversal subtends no more than 178 degrees,
 %     this function correctly inverts the VDIST function to within 0.2
 %     millimeters of distance, 5e-10 degrees of forward azimuth,
