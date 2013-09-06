@@ -20,8 +20,13 @@ lons(1) = lon1;
 i = 1;
 for k=steps:steps:totDist
     i = i + 1;
-    [lats(i), lons(i)] = vreckon(lats(i-1), lons(i-1),steps, a12);
-    [~,a12,~] = vdist(lats(i), lons(i),lat2,lon2);
+    if (k < totDist)
+        [lats(i), lons(i)] = vreckon(lats(i-1), lons(i-1),steps, a12);
+        [~,a12,~] = vdist(lats(i), lons(i),lat2,lon2);
+    else
+        lats(i) = lat2;
+        lons(i) = lon2;
+    end
 end
 lats = lats';
 lons = lons';

@@ -17,7 +17,7 @@
 FilePath = 'C:\Documents and Settings\jtrujil1\My Documents\General Programming\Flight_Plan_Modeling\';
 %testFlightFilePath = strcat(FilePath,'testFlightsRev3.csv');
 testFlightFilePath = strcat(FilePath,'test_20130704_1540_sample.csv');
-submissionFilePath = strcat(FilePath,'FlightQuestSimulator-Rev3\OneDaySimulatorFiles\jovanSubmission9.csv');
+submissionFilePath = strcat(FilePath,'FlightQuestSimulator-Rev3\OneDaySimulatorFiles\jovanSubmission7.csv');
 airportsFilePath = strcat(FilePath, 'airports.csv');
 delimiter = ',';
 startRow = 2;
@@ -123,15 +123,8 @@ for i = 1:1:totalFlights
             FinalAltitudeFeet = altitude_feet{1,1}(j);
         end
     end
-    [totalDistanceMeters,a12,~] = vdist(CurrentLatitude(i),CurrentLongitude(i),FinalLatitude,FinalLongitude);
-    if totalDistanceMeters < 50
-        [CurrentLatitude(i),CurrentLongitude(i), ~] = vreckon(CurrentLatitude(i), CurrentLongitude(i), 5280*100*feetToMeters,a12);
-        stepsFeet = 5280;
-        AltitudeFeet = str2double(FinalAltitudeFeet{1,1});
-    else
-        stepsFeet = 5280*100;
-    end
-    %stepsFeet = (totalDistanceMeters/1000*kmToMile*5280)/stepCount;
+    [totalDistanceMeters,~,~] = vdist(CurrentLatitude(i),CurrentLongitude(i),FinalLatitude,FinalLongitude);
+    stepsFeet = (totalDistanceMeters/1000*kmToMile*5280)/stepCount;
     %stepsFeet = 5280*100;
     %stepsMeters = totalDistanceMeters/stepCount;
     %stepsMeters = 5280*100*feetToMeters;
@@ -159,18 +152,7 @@ clearvars testFlightFilePath submissionFilePath airportsFilePath delimiter start
 % 301799331
 % 301786098
 % 301792109
-% 301786251
-% 301833472
-% 301819188
-% 301838129
-%
-% Problem flights using generate_great_circle_path with stepsFeet a
-% constant 5280*100 feet are:
-% 301823535
-% 301785086
-%
-% Problems flights using vcourse with stepCount = 35 are the same as above.
-%
+%  301786251
     
     
     

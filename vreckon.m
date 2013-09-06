@@ -99,6 +99,7 @@ lon2 = lon1 + L;
 lat2 = lat2 * 57.295779513082322865;
 lon2 = lon2 * 57.295779513082322865;
 lon2 = mod(lon2,360); % follow [0,360] convention
+lon2 = lon2 - 360.0;
 if nargout > 2
     a21 = atan2(sinAlpha, -tmp); 
     a21  = 180 + a21  * 57.295779513082322865; % note direction reversal

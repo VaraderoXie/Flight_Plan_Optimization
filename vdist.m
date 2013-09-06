@@ -104,16 +104,18 @@ s = b*A*(sigma-deltasigma);
 % % From point #1 to point #2
  a12 = atan2(cos(U2)*sin(lambda),cos(U1)*sin(U2)-sin(U1)*cos(U2)*cos(lambda));
  if a12 < 0
-     a12 = rad2deg(a12+2*pi);
+     a12 = a12+2*pi;
  end
 % % from point #2 to point #1
  a21 = atan2(cos(U1)*sin(lambda),-sin(U1)*cos(U2)+cos(U1)*sin(U2)*cos(lambda));
  if a21 < 0
-     a21 = rad2deg(a21+pi);
+     a21 = a21+pi;
  end
  if (L>0) && (L<pi)
-     a21 = rad2deg(a21 + pi);
+     a21 = a21 + pi;
  end
+ a12 = rad2deg(a12);
+ a21 = rad2deg(a21);
 
 % % =====================================================================
 % % Code to test the Mapping Toolbox spherical earth distance against
