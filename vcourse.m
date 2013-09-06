@@ -10,7 +10,6 @@ function [lats, lons, totDist] = vcourse(lat1, lon1, lat2, lon2, steps)
 
 % Convert steps to ft for the vreckon function.
 % Calculate the total number of waypoints.
-steps_ft = steps * 3.280;
 n = length(0:steps:totDist);
 
 % Fill lats and lons arrays with waypoint coordinates.
@@ -19,12 +18,13 @@ lons = zeros(1,n);
 lats(1) = lat1;
 lons(1) = lon1;
 i = 1;
-for k=steps:steps:(totDist/2)
+for k=steps:steps:totDist
     i = i + 1;
-    [lats(i), lons(i)] = vreckon(lats(i-1), lons(i-1),steps_ft, rad2deg(a12));
+    [lats(i), lons(i)] = vreckon(lats(i-1), lons(i-1),steps, a12);
     [~,a12,~] = vdist(lats(i), lons(i),lat2,lon2);
 end
-
+lats = lats';
+lons = lons';
 
     
     

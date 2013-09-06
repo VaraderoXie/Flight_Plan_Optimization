@@ -5,6 +5,8 @@ function [s, a12, a21] = vdist(lat1,lon1,lat2,lon2)
 % [s, a12, a21] = vdist(lat1,lon1,lat2,lon2)
 %
 % s = distance in meters
+% a12 = azimuth for starting point in degrees
+% a21 = azimuth for backtrack in degrees
 % lat1 = GEODETIC latitude of first point (degrees)
 % lon1 = longitude of first point (degrees)
 % lat2, lon2 = second point (degrees)
@@ -98,19 +100,19 @@ s = b*A*(sigma-deltasigma);
 
 % % =====================================================================
 % % Vicenty's azimuth calculation code is left unused:
-% % (results in radians)
+% % (results in degrees)
 % % From point #1 to point #2
  a12 = atan2(cos(U2)*sin(lambda),cos(U1)*sin(U2)-sin(U1)*cos(U2)*cos(lambda));
  if a12 < 0
-     a12 = a12+2*pi;
+     a12 = rad2deg(a12+2*pi);
  end
 % % from point #2 to point #1
  a21 = atan2(cos(U1)*sin(lambda),-sin(U1)*cos(U2)+cos(U1)*sin(U2)*cos(lambda));
  if a21 < 0
-     a21 = a21+pi;
+     a21 = rad2deg(a21+pi);
  end
  if (L>0) && (L<pi)
-     a21 = a21 + pi;
+     a21 = rad2deg(a21 + pi);
  end
 
 % % =====================================================================
