@@ -1,4 +1,4 @@
-%% generateSubmission script
+%% generateSubmissionv1p1 script
 % Jovan Trujillo
 %
 %
@@ -17,7 +17,7 @@
 %FilePath = 'C:\Documents and Settings\jtrujil1\My Documents\General Programming\Flight_Plan_Modeling\';
 % testFlightFilePath = strcat(FilePath,'testFlightsRev3.csv');
 testFlightFilePath = strcat(FilePath,'test_20130704_1540_sample.csv');
-submissionFilePath = strcat(FilePath,'FlightQuestSimulator-Rev3\OneDaySimulatorFiles\originalSubmission.csv');
+submissionFilePath = strcat(FilePath,'FlightQuestSimulator-Rev3\OneDaySimulatorFiles\mysubmission.csv');
 %submissionFilePath = strcat(FilePath,'mysubmission.csv');
 airportsFilePath = strcat(FilePath, 'airports.csv');
 delimiter = ',';
@@ -110,6 +110,9 @@ feetToMeters = 0.3048;
 testFlightID = fopen(submissionFilePath, 'w');
 fprintf(testFlightID,'FlightId,Ordinal,LatitudeDegrees,LongitudeDegrees,AltitudeFeet,AirspeedKnots\n');
 totalFlights = length(FlightHistoryId);
+totalFuelBurn = zeros(totalFlights);
+flightTime = zeros(totalFlights);
+
 for i = 1:1:totalFlights
     landingCode = ArrivalAirport(i);
     AltitudeFeet = CurrentAltitude(i);
@@ -126,31 +129,34 @@ for i = 1:1:totalFlights
         end
     end
     [totalDistanceMeters,a12,~] = vdist(CurrentLatitude(i),CurrentLongitude(i),FinalLatitude,FinalLongitude);
-    
+    [totalFuelBurn(i), flightTime(i)] = runFullFlight(AltitudeFeet*feetToMeters,AltitudeFeet*feetToMeters,totalDistanceMeters,150);
     % If destination is less than 70 miles away then shrink step size to 1
     % mile.
     if totalDistanceMeters/1000 < 100
-        [CurrentLatitude(i),CurrentLongitude(i), ~] = vreckon(CurrentLatitude(i), CurrentLongitude(i), 5280*100*feetToMeters,a12);
-        stepsFeet = 5280;
+        %[CurrentLatitude(i),CurrentLongitude(i), ~] = vreckon(CurrentLatitude(i), CurrentLongitude(i), 5280*100*feetToMeters,a12);
+        %stepsFeet = 5280;
         % stepsMeters = 5280/kmToMile;
-        AltitudeFeet = 17000;
+        
+        fprintf(testFlightID, '%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i), 1, CurrentLatitude(i), CurrentLongitude(i),AltitudeFeet,AirspeedKnots);
+        fprintf(testFlightID, '%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i), 2, FinalLatitude, FinalLongitude,FinalAltitudeFeet, AirspeedKnots);
+        
     else
-        stepsFeet = 5280*100;
+        %stepsFeet = 5280*100;
         % stepsMeters = (5280*70)/kmToMile;
-    end
-
-    % stepsFeet = (totalDistanceMeters/1000*kmToMile*5280)/stepCount;
-    %stepsFeet = 5280;
-    %stepsMeters = totalDistanceMeters/stepCount;
-    %stepsMeters = 5280*100*feetToMeters;
-    [lats,lons] = generate_great_circle_path(CurrentLatitude(i), CurrentLongitude(i),FinalLatitude, FinalLongitude,stepsFeet);
-    %[lats,lons] = vcourse(CurrentLatitude(i),CurrentLongitude(i),FinalLatitude,FinalLongitude,stepsMeters);
-    for j = 1:1:length(lats)
-        if (j < length(lats))
-            fprintf(testFlightID,'%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i), j,lats(j),lons(j),AltitudeFeet, AirspeedKnots);
-        else
-            % fprintf(testFlightID,'%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i),j,lats(j),lons(j),str2double(FinalAltitudeFeet{1,1}),AirspeedKnots);
-             fprintf(testFlightID,'%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i),j,lats(j),lons(j),FinalAltitudeFeet,AirspeedKnots);
+        % stepsFeet = (totalDistanceMeters/1000*kmToMile*5280)/stepCount;
+        %stepsFeet = 5280;
+        %stepsMeters = totalDistanceMeters/stepCount;
+        stepsMeters = 5280*100*feetToMeters;
+        
+        %[lats,lons] = generate_great_circle_path(CurrentLatitude(i), CurrentLongitude(i), FinalLatitude, FinalLongitude, stepsFeet);
+        [lats,lons] = vcourse(CurrentLatitude(i),CurrentLongitude(i),FinalLatitude,FinalLongitude,stepsMeters);
+        for j = 1:1:length(lats)
+            if (j < length(lats))
+                fprintf(testFlightID,'%d,%d,%f,%f,%f,%f\n', FlightHistoryId(i), j, lats(j), lons(j), AltitudeFeet, AirspeedKnots);
+            else
+                % fprintf(testFlightID,'%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i),j,lats(j),lons(j),str2double(FinalAltitudeFeet{1,1}),AirspeedKnots);
+                  fprintf(testFlightID,'%d,%d,%f,%f,%f,%f\n', FlightHistoryId(i), j, lats(j), lons(j), FinalAltitudeFeet, AirspeedKnots);
+            end
         end
     end
     
@@ -180,10 +186,13 @@ clearvars testFlightFilePath submissionFilePath airportsFilePath delimiter start
 %
 % Problems flights using vcourse with stepCount = 35 are the same as above.
 %
-    
-    
-    
-    
+
+% Short flights were fixed by moving the plane outside of their landing
+% approach. Need to understand why the simulator needs this to happen.
+
+% [fuelburn, planeWeight, fuelWeight, machCruise,SpeedOfSound,liftCoef,planeDrag,horizClimbDist,Tmax,Vmean1] = planeClimb(planeNumber, descentTime, climbAltitude)
+% [fuelburn, planeWeight, fuelWeight, cruiseTime, horizCruiseDist] = planeCruise(planeNumber, cruiseAltitude, deltaAltitude, liftCoef, totalDistance, SpeedOfSound, machCruise, descentTime, fuelweightCL, horizClimbDist,Vmean1,planeDrag)    
+% [fuelburn, TIME] = planeLand(planeNumber,descentTime,planeWeight,fuelWeight, fuelburnCL, fuelburnCR, Timedescent,Tmax)
  
     
     

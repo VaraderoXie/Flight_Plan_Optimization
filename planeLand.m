@@ -1,4 +1,4 @@
-function [fuelburn, TIME] = planeLand(planeNumber,descentTime,planeWeight,fuelWeight, fuelburnCL, fuelburnCR, Timedescent,Tmax)
+function [fuelburn, TIME] = planeLand(planeNumber, descentTime, planeWeight, fuelWeight, fuelburnCL, fuelburnCR, Timedescent, Tmax, climbAltitudeMeters, vmean3, Timeclimb, Timecruise)
 % Compute the fuel consumption during takeoff based on aircraft type,
 % descent angle, and the altitude from which it is descending from.
 % PLANELAND(planeNumber, desscentAngle, descentAltitude) return the fuel
@@ -13,12 +13,12 @@ end
 %% Parameters and constants
 
 beta = 60000;   % Velocity/altitude parameter
-if (descentTime >= 150 && descentTiem <= 300) 
+if (descentTime >= 150 && descentTime <= 300) 
     gamma = descentTime; % A number between 150-300
 else
     warning('Invalid descentTime. Input range is 150 - 300');
 end
-zc = climbAltitude;   % Cruise altitude [m]
+zc = climbAltitudeMeters;   % Cruise altitude [m]
 rho0 = 1.225;   % Air density at sea level [kg/m^3]
 epsilon = 0.0001;   % Constant in the density function [l/m]
 k = 0.045;  % Constant selected for the included drag coefficient

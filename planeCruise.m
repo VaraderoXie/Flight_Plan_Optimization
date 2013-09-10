@@ -1,4 +1,4 @@
-function [fuelburn, planeWeight, fuelWeight, cruiseTime, horizCruiseDist] = planeCruise(planeNumber, cruiseAltitude, deltaAltitude, liftCoef, totalDistance, SpeedOfSound, machCruise, descentTime, fuelweightCL, horizClimbDist,Vmean1,planeDrag)
+function [fuelburn, planeWeight, fuelWeight, cruiseTime, horizCruiseDist, vmean3, Timedescent] = planeCruise(planeNumber, cruiseAltitude, deltaAltitude, liftCoef, totalDistance, SpeedOfSound, machCruise, descentTime, fuelweightCL, horizClimbDist,Vmean1,planeDrag)
 % PLANECRUISE(planeNumber, cruiseSpeed,cruiseAltitude) calculates the fuel 
 % consumption during the cruising phase of the flight. 
 

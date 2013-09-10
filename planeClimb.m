@@ -1,11 +1,11 @@
-function [fuelburn, planeWeight, fuelWeight, machCruise,SpeedOfSound,liftCoef,planeDrag,horizClimbDist,Tmax,Vmean1] = planeClimb(planeNumber, descentTime, climbAltitude)
+function [fuelburn, planeWeight, fuelWeight, machCruise, SpeedOfSound, liftCoef, planeDrag, horizClimbDist, Tmax, Vmean1, Timeclimb] = planeClimb(planeNumber, descentTime, climbAltitudeMeters)
 % Compute the fuel consumption during takeoff based on aircraft type, 
 % takeoff climb angle, and the final desired altitude.
 % PLANECLIMB(planeNumber, climbAngle, climbAltitude) returns the fuel 
 % consumption in kg. 
 
 if (nargin < 3)
-    error('Usage: [fuelburn, planeWeight, fuelWeight, machCruise, SpeedOfSound, liftCoef, planeDrag, horizClimbDist, Tmax,Vmean1]=planeClimb(planeNumber, descentTime, climbAltitude)');
+    error('Usage: [fuelburn, planeWeight, fuelWeight, machCruise, SpeedOfSound, liftCoef, planeDrag, horizClimbDist, Tmax,Vmean1]=planeClimb(planeNumber, descentTime, climbAltitudeMeters)');
 end
 
 % planeType returns S, m0, lf, alpha, SFC
@@ -20,7 +20,7 @@ if (descentTime >= 150 && descentTime <= 300)
 else
     warning('Invalid descentTime. Input range is 150-300');
 end
-zc = climbAltitude;   % Cruise altitude [m]
+zc = climbAltitudeMeters;   % Cruise altitude [m]
 rho0 = 1.225;   % Air density at sea level [kg/m^3]
 epsilon = 0.0001;   % Constant in the density function [l/m]
 k = 0.045;  % Constant selected for the included drag coefficient
