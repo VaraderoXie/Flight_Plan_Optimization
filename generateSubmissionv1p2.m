@@ -18,7 +18,7 @@
 %FilePath = 'C:\Documents and Settings\jtrujil1\My Documents\General Programming\Flight_Plan_Modeling\';
 % testFlightFilePath = strcat(FilePath,'testFlightsRev3.csv');
 testFlightFilePath = strcat(FilePath,'test_20130704_1540_sample.csv');
-submissionFilePath = strcat(FilePath,'FlightQuestSimulator-Rev3\OneDaySimulatorFiles\submission3.csv');
+submissionFilePath = strcat(FilePath,'FlightQuestSimulator-Rev3\OneDaySimulatorFiles\submissionSteps200.csv');
 %submissionFilePath = strcat(FilePath,'mysubmission.csv');
 airportsFilePath = strcat(FilePath, 'airports.csv');
 delimiter = ',';
