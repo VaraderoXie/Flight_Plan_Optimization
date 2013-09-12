@@ -18,12 +18,12 @@
 FilePath = 'C:\Documents and Settings\jtrujil1\My Documents\General Programming\Flight_Plan_Modeling\';
 % testFlightFilePath = strcat(FilePath,'testFlightsRev3.csv');
 testFlightFilePath = strcat(FilePath,'test_20130704_1540_sample.csv');
-submissionFilePath = strcat(FilePath,'FlightQuestSimulator-Rev3\OneDaySimulatorFiles\submission15.csv');
+submissionFilePath = strcat(FilePath,'FlightQuestSimulator-Rev3\OneDaySimulatorFiles\submission8.csv');
 %submissionFilePath = strcat(FilePath,'mysubmission.csv');
 airportsFilePath = strcat(FilePath, 'airports.csv');
 delimiter = ',';
 startRow = 2;
-stepDistanceMiles = 90;
+stepCount = 50;
 E = referenceEllipsoid('wgs84','km');
 %E = referenceEllipsoid('unitsphere');
 %% Format string for each line of text:
@@ -115,7 +115,7 @@ fprintf(testFlightID,'FlightId,Ordinal,LatitudeDegrees,LongitudeDegrees,Altitude
 totalFlights = length(FlightHistoryId);
 %totalFuelBurn = zeros(totalFlights);
 %flightTime = zeros(totalFlights);
-
+old_length = 0;
 for i = 1:1:totalFlights
     landingCode = ArrivalAirport(i);
     AltitudeFeet = CurrentAltitude(i);
@@ -134,34 +134,37 @@ for i = 1:1:totalFlights
     
     %[totalDistanceMeters,a12,~] = vdist(CurrentLatitude(i),CurrentLongitude(i),FinalLatitude,FinalLongitude);
     [totalDistanceKm, a12] = distance(CurrentLatitude(i), CurrentLongitude(i), FinalLatitude, FinalLongitude, E, 'degrees');
-    old_segment = totalDistanceKm;
 
 %    [totalFuelBurn(i), flightTime(i)] = runFullFlight(AltitudeFeet*feetToMeters,AltitudeFeet*feetToMeters,totalDistanceKm*1000,150);
     % If destination is less than 70 miles away then shrink step size to 1
     % mile.
-    if totalDistanceKm < (stepDistanceMiles/kmToMile)
+    if totalDistanceKm < 100
         %[CurrentLatitude(i),CurrentLongitude(i), ~] = vreckon(CurrentLatitude(i), CurrentLongitude(i), 5280*100*feetToMeters,a12);
         %stepsFeet = 5280;
         % stepsMeters = 5280/kmToMile;
         
-        fprintf(testFlightID, '%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i), 1, CurrentLatitude(i), CurrentLongitude(i), AltitudeFeet, AirspeedKnots);
-        [midLatitude, midLongitude] = reckon(CurrentLatitude(i), CurrentLongitude(i), 25/kmToMile, a12, E, 'degrees');
-        fprintf(testFlightID, '%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i), 2, midLatitude, midLongitude, 2000, 0);
-        fprintf(testFlightID, '%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i), 2, FinalLatitude, FinalLongitude, FinalAltitudeFeet, AirspeedKnots);
+        fprintf(testFlightID, '%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i), 1, CurrentLatitude(i), CurrentLongitude(i),AltitudeFeet,AirspeedKnots);
+        [midLatitude, midLongitude] = reckon(CurrentLatitude(i),CurrentLongitude(i),25/kmToMile,a12,E,'degrees');
+        fprintf(testFlightID, '%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i),2,midLatitude,midLongitude,2000,0);
+        fprintf(testFlightID, '%d,%d,%f,%f,%f,%f\n',FlightHistoryId(i), 3, FinalLatitude, FinalLongitude,FinalAltitudeFeet, AirspeedKnots);
         
     else
-        %stepsFeet = 5280*100;
-        %stepsMeters = (5280*70)/kmToMile;
+        stepsFeet = 5280*100;
+        % stepsMeters = (5280*70)/kmToMile;
         %stepsFeet = (totalDistanceKm*kmToMile*5280)/stepCount;
         %stepsFeet = 5280;
         %stepsMeters = totalDistanceMeters/stepCount;
         %stepsKm = (5280*100*feetToMeters)/1000;
-        stepCount = round(totalDistanceKm / (stepDistanceMiles/kmToMile));
+        %stepCount = round(totalDistanceKm / stepsKm);
         
-        %[lats,lons] = generate_great_circle_path(CurrentLatitude(i), CurrentLongitude(i), FinalLatitude, FinalLongitude, stepsFeet);
+        [lats,lons] = generate_great_circle_path(CurrentLatitude(i), CurrentLongitude(i), FinalLatitude, FinalLongitude, stepsFeet);
+        if (length(lats) > old_length) 
+            old_length = length(lats);
+        end
         %[lats,lons] = vcourse(CurrentLatitude(i),CurrentLongitude(i),FinalLatitude,FinalLongitude,stepsMeters);
-        [lats,lons] = track2(CurrentLatitude(i), CurrentLongitude(i), FinalLatitude, FinalLongitude, E, 'degrees',stepCount);
+        %[lats,lons] = track2(CurrentLatitude(i), CurrentLongitude(i), FinalLatitude, FinalLongitude, E, 'degrees',stepCount);
         for j = 1:1:length(lats)
+            [segment,~] = distance(
             if (j < length(lats))
                 fprintf(testFlightID,'%d,%d,%f,%f,%f,%f\n', FlightHistoryId(i), j, lats(j), lons(j), AltitudeFeet, AirspeedKnots);
             else
@@ -170,6 +173,7 @@ for i = 1:1:totalFlights
             end
         end
     end
+    
 end
 fclose(testFlightID);
 %% Clear temporary variables
